@@ -56,29 +56,48 @@ img.front{
 #berita section:hover{
 	background-color: #6fcee9;
 }
-
 #feedback nav ul li{
-	display: list-item;
 	font-size: 20px;
 	list-style: none;
 }
 a{
 	text-decoration: none; 
 }
-#berita h1{
-	text-transform: capitalize;
+.change{
+display:block;
+width:auto;
+height:auto;
 }
-#berita ul li{
-	list-style:none;
-	display: inherit;
-	margin-right: 50px;
+ .change:hover{
+display:block;
+width:auto;
+height:auto;
+  }
+
+.drop{
+position:absolute;
+background:#000;
+margin:0;
+padding:10px;
+font-family: 'Exo 2', sans-serif;
+color:#FFF;
+visibility:hidden;
+display:inline;
+}
+.change:hover+.drop,.drop:hover{
+/*_________^_________^___________*/
+position:absolute;
+background:#b3b3b3;
+margin:0;
+padding:10px;
+font-family: 'Exo 2', sans-serif;
+color:black;
+visibility:visible;
+display: inline;
+ }
+#berita table{
 	text-align: center;
-}
-#berita nav ul li{
-	list-style: none;
-	display: inline;
-	margin-right: 30px;
-	text-align: left;
+	font-size: 20px;
 }
 a:hover{
 	text-decoration:underline;;
