@@ -5,7 +5,7 @@ body{
 	margin: 0px;
 }
 #head{
-	height: 35px;
+	height: 60px;
 	padding-top: 10px;
 	padding-bottom: 10px;
 	position: fixed;
@@ -15,19 +15,28 @@ body{
 	display: inline;
 	z-index: 10;
 	font-family: sans-serif;
-	background-color: aqua;
+	font-size: 40px;
+	background-color: #b3b3b3;
+}
+#head a{
+	color: black;
 }
 .right: {
 	float: right !important;
 	z-index: 10;	
 }
+#status{
+	position: relative;
+	margin-top: 60px;
+	margin-bottom: 60px;
 
+}
 #berita{
-	background-color: red;
-	margin-top: 30px;
+	margin-top:  	0px;
 	padding:40px;
 	width: auto;
 	height: auto;
+	font-size: 20px;
 }
 .center{
 	margin-right: auto;
@@ -45,16 +54,31 @@ img.front{
 	font-size: 30px;	
 }
 #berita section:hover{
-	background-color: black;
+	background-color: #6fcee9;
 }
 
-#feedback nav ul li form{
+#feedback nav ul li{
 	display: list-item;
-
+	font-size: 20px;
+	list-style: none;
 }
 a{
-	color:green;
 	text-decoration: none; 
+}
+#berita h1{
+	text-transform: capitalize;
+}
+#berita ul li{
+	list-style:none;
+	display: inherit;
+	margin-right: 50px;
+	text-align: center;
+}
+#berita nav ul li{
+	list-style: none;
+	display: inline;
+	margin-right: 30px;
+	text-align: left;
 }
 a:hover{
 	text-decoration:underline;;

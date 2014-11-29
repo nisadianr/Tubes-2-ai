@@ -1,6 +1,7 @@
 <html>
 	<head>
 		<title>Tubes2.com</title>
+				<link rel="stylesheet" href="dist/css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="style.css">
 	</head>
 	<body>
@@ -13,18 +14,27 @@
 			</a>
 		</div>
 		<div id="berita" >
+			
+			<div id="status">
+				<ul class="nav nav-pills" >
+				  <li role="presentation" class="disabled"><a href="#">Pilih cara input</a></li>
+				  <li role="presentation" class="disabled active"><a href="#">Masukan berita</a></li>
+				  <li role="presentation" class="disabled"><a href="#">Lihat hasilnya</a></li>
+				</ul>
+			</div>
 			<form class="center">
 				Judul:<br>
-				<input type="text" class="right" placeholder="Judul" size="118"><br>
+				<input type="text" class="form-control right" size="88" placeholder="Judul"><br>
 				Kontent:<br>
-				<textarea placeholder="Kontent" rows="20" cols="120"></textarea><br>
+				<textarea class="form-control" placeholder="Kontent" rows="10" cols="90" ></textarea><br>
 				Pilih algoritma:
-				<select>
+				<select class="form-control">
 					<option>algo1</option>
 					<option>algo2</option>
 					<option>algo3</option>
 				</select>
-				<input type="submit" value="Analyze" size="30" style="float: right"> 
+				<br>
+				<input type="submit" value="Analyze" size="30" style="float: right" class="btn btn-primary"> 
 			</form>
 		</div>
 		<footer>

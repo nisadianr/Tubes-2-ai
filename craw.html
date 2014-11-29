@@ -1,9 +1,10 @@
 <html>
 	<head>
 		<title>Tubes2.com</title>
+				<link rel="stylesheet" href="dist/css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="style.css">
 	</head>
-	<body>
+	<body backgoud=>
 		<img src="">
 		<!-- logo-->
 		<div id="head" align="center">
@@ -13,16 +14,25 @@
 			</a>
 		</div>
 		<div id="berita" >
+
+			<div id="status">
+				<ul class="nav nav-pills" >
+				  <li role="presentation" class="disabled"><a href="#">Pilih cara input</a></li>
+				  <li role="presentation" class="disabled active"><a href="#">Masukan berita</a></li>
+				  <li role="presentation" class="disabled"><a href="#">Lihat hasilnya</a></li>
+				</ul>
+			</div>
 			<form class="center">
 				Website:<br>
-				<input type="text" class="right" placeholder="Judul" size="118"><br>
+				<input type="text" class="form-control right" placeholder="Link" size="118"><br>
 				Pilih algoritma:
-				<select>
+				<select class="form-control">
 					<option>algo1</option>
 					<option>algo2</option>
 					<option>algo3</option>
 				</select>
-				<input type="submit" value="Analyze" size="30" style="float: right"> 
+				<br>
+				<input type="submit" class="btn btn-primary" value="Analyze" size="30" style="float: right"> 
 			</form>
 		</div>
 		<footer>

@@ -1,6 +1,7 @@
 <html>
 	<head>
 		<title>Tubes2.com</title>
+		<link rel="stylesheet" href="dist/css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="style.css">
 	</head>
 	<body>
@@ -12,26 +13,46 @@
 				<span class="detail">News Analyst</span>
 			</a>
 		</div>
-		<div id="berita">
-			<h1 class="judul">judulnya</h1>
-			<p>hasil lalalallalalala</p><br>
-			<div id="feedback" class="center" >
+		<div id="berita" align="center">
+
+			<div id="status">
+				<ul class="nav nav-pills" >
+				  <li role="presentation" class="disabled"><a href="#">Pilih cara input</a></li>
+				  <li role="presentation" class="disabled"><a href="#">Masukan berita</a></li>
+				  <li role="presentation" class="disabled active"><a href="#">Lihat hasilnya</a></li>
+				</ul>
+			</div>
+			<h1 align="center" class="judul">judulnya</h1>
+			<ul class="cat" align="center">
+				<li>cat 1</li>
+				<li>cat 1</li>
+				<li>cat 1</li>
+			</ul>
+			<div id="feedback">
 			<nav>
 				<ul>
-					Change category!
+					<li>
+						Change category!
+					</li>
 					<li>
 						<form>
-							<input type="checkbox" value="cat1" name="cat1">cat 1
-							<input type="checkbox" value="cat2" name="cat2">cat 2<br>
-							<input type="checkbox" value="cat3" name="cat3">cat 3
-							<input type="checkbox" value="cat4" name="cat4">cat 4<br>
-							<input type="checkbox" value="cat5" name="cat5">cat 5
-							<input type="checkbox" value="cat6" name="cat6">cat 6<br>
-							<input type="checkbox" value="cat7" name="cat7">cat 7
-							<input type="checkbox" value="cat8" name="cat8">cat 8<br>
-							<input type="checkbox" value="cat9" name="cat9">cat 9
-							<input type="checkbox" value="cat10" name="cat10">cat 10<br>
-							<input type="submit" value="submit">
+							<nav>
+								<ul>
+									<li><input type="checkbox" value="cat1" name="cat1">cat 1</li>
+									<li><input type="checkbox" value="cat2" name="cat2">cat 2 </li>
+									<li><input type="checkbox" value="cat3" name="cat3">cat 3</li>
+									<li><input type="checkbox" value="cat4" name="cat4">cat 4 </li>
+									<li><input type="checkbox" value="cat5" name="cat5">cat 5</li>
+								</ul>
+								<ul>
+									<li><input type="checkbox" value="cat6" name="cat6">cat 6</li> 
+									<li><input type="checkbox" value="cat7" name="cat7">cat 7</li>
+									<li><input type="checkbox" value="cat8" name="cat8">cat 8</li> 
+									<li><input type="checkbox" value="cat9" name="cat9">cat 9</li>
+									<li><input type="checkbox" value="cat10" name="cat10">cat 10</li> <br>
+									<input class="btn btn-primary" type="submit" value="submit">
+								</ul>
+							</nav>
 						</form>
 					</li>
 				</ul>
