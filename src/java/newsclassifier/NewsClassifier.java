@@ -19,12 +19,19 @@ import weka.filters.unsupervised.attribute.NumericToNominal;
 import weka.filters.unsupervised.attribute.StringToWordVector;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+import weka.classifiers.bayes.NaiveBayesMultinomialUpdateable;
 import weka.classifiers.functions.SMO;
+import weka.classifiers.meta.FilteredClassifier;
 import weka.classifiers.trees.RandomForest;
+import weka.filters.MultiFilter;
 import weka.filters.unsupervised.attribute.StringToNominal;
 
 /**
@@ -34,14 +41,26 @@ import weka.filters.unsupervised.attribute.StringToNominal;
 public class NewsClassifier {
 
     private int mode; //1 untuk naive bayes, 2 untuk tree, 3 untuk KNN, 4 untuk ANN
-    private Instances data;
+    public Instances data;
     private Instances unLabeledData;
-    private Classifier classifier;
+    public Classifier classifier;
+	public FilteredClassifier fc;
+	private final String namaclass;
 	
-    public NewsClassifier () throws Exception{
+    public NewsClassifier (String s) throws Exception{
         data = null;
         mode = 1;
         classifier=null;
+		fc = new FilteredClassifier();
+		namaclass = s;
+		File f = new File("model1.model");
+		if(!f.exists()){
+			buildModel();
+		}
+		else{
+			System.out.println("lagingeload");
+			loadModel("model1.model");
+		}
     }
     
     public Instances LoadDB(Instances dataSource) throws Exception{
@@ -55,9 +74,8 @@ public class NewsClassifier {
 		return query.retrieveInstances();
     }
     
-    public Instances StrToWV(Instances dataSource, String sFile) throws Exception {
+    public Filter StrToWV(String sFile) throws Exception {
         StringToWordVector filter = new StringToWordVector();
-        filter.setInputFormat(dataSource);
         /*filter.setIDFTransform(false);
         filter.setTFTransform(true);
         filter.setAttributeIndices("1-2");
@@ -78,36 +96,31 @@ public class NewsClassifier {
         filter.setWordsToKeep(10000);
        
         
-        return Filter.useFilter(dataSource,filter);
+        return filter;
         //return newData;
         //data = newData;
     }
     
-    public Instances StrtoNom(Instances dataSource) throws Exception {
+    public Filter StrtoNom() throws Exception {
         StringToNominal filter = new StringToNominal();
         //NumericToNominal filter = new NumericToNominal();
-        filter.setInputFormat(dataSource);
         //filter.setOptions("-R 1");
-        String[] opts = {"-R","first"};
+        String[] opts = {"-R","last"};
         filter.setOptions(opts);
         //filter.setAttributeRange("first");
-        return Filter.useFilter(dataSource, filter);
+        return filter;
     }
     
-    public void ClassAssigner() throws Exception {
+    public Filter ClassAssigner() throws Exception {
         ClassAssigner filter =  new ClassAssigner();
-	filter.setInputFormat(data);
 	//filter3.setClassIndex("last");
         filter.setClassIndex("first");
-	data = Filter.useFilter(data, filter);
+		return filter;
     }
-    public void CrossValidation(Instances dataSource, Classifier cls,int n) throws Exception
+    public void CrossValidation(int n) throws Exception
     {
-        dataSource.setClassIndex(0);
-        Evaluation eval = new Evaluation(dataSource);
-        cls.buildClassifier(dataSource);
-		classifier = cls;
-        eval.crossValidateModel(cls, dataSource, n, new Random(1));
+        Evaluation eval = new Evaluation(data);
+        eval.crossValidateModel(fc, data, n, new Random(1));
         System.out.println(eval.toSummaryString("Results",false));
 		System.out.println(eval.toMatrixString());
 		System.out.println(eval.toClassDetailsString());
@@ -115,7 +128,7 @@ public class NewsClassifier {
         //System.out.println(eval.toMatrixString());
     }	
     
-	public void stringToARFF(String text, String full_text, String output_file) throws Exception {
+	public void stringToARFF(String text, String full_text, String label,String output_file) throws Exception {
 		FileWriter fw = new FileWriter(output_file);
 		PrintWriter pw = new PrintWriter(fw);
 
@@ -126,31 +139,67 @@ public class NewsClassifier {
 		pw.println("@attribute label {Pendidikan,Politik,'Hukum dan Kriminal','Sosial Budaya',Olahraga,'Teknologi dan Sains',Hiburan,'Bisnis dan Ekonomi',Kesehatan,'Bencana dan Kecelakaan'}");
 		pw.println();
 		pw.println("@data");
-		pw.println("'" + text + "','" + full_text + "',?");
+		pw.println("'" + text + "','" + full_text + "',"+label);
 
 		pw.flush();
 		pw.close();
 		fw.close();
 	}
 	
-	public String classify(Instances dataSource, String input_file) throws Exception {
-		unLabeledData = DataSource.read(input_file);
-		unLabeledData = StrToWV(unLabeledData, "s.txt");
-		//unLabeledData = StrtoNom(unLabeledData);
-		System.out.println(unLabeledData.toString());
-		unLabeledData.setClassIndex(0);
-		System.out.println(unLabeledData.toString());
-		Instances LabeledData = new Instances(unLabeledData);
+	public List<String> classify(String input_file) throws Exception {
 		
+		unLabeledData = DataSource.read(input_file);
+		//unLabeledData = StrtoNom(unLabeledData);
+		
+		unLabeledData.setClassIndex(unLabeledData.numAttributes()-1);
+		Instances LabeledData = new Instances(unLabeledData);
+		List<String> ls = new ArrayList<String>();
 
 		for(int i=0; i < unLabeledData.numInstances(); ++i) {
-			double clsLabel = classifier.classifyInstance(unLabeledData.instance(i));
+			double clsLabel = fc.classifyInstance(unLabeledData.instance(i));
 			LabeledData.instance(i).setClassValue(clsLabel);
-			System.out.println();
+			ls.add(LabeledData.instance(i).toString(2));
 		}
-		
-		return LabeledData.instance(0).toString(0);
+//		System.out.println(LabeledData.toString());
+		return ls;
 	}
+	
+	 public void CSVtoARFF (String in,String out) throws IOException {
+        CSVFormat format = CSVFormat.DEFAULT.withHeader();
+        CSVParser parser = new CSVParser(new FileReader(in),format);
+            
+        List<String> listJudul = new ArrayList<String>();
+        List<String> listFullText = new ArrayList<String>();
+        List<String> listClass = new ArrayList<String>();
+        for(CSVRecord record : parser) {
+            listJudul.add(record.get("judul"));
+            listFullText.add(record.get("full_text"));
+            listClass.add(record.get(namaclass));
+        }
+            
+        FileWriter fw = new FileWriter(out);
+        PrintWriter pw = new PrintWriter(fw);
+        pw.println("@relation CrawlingQuery");
+        pw.println();
+        pw.println("@attribute judul string");
+        pw.println("@attribute full_text string");
+        pw.println("@attribute label {Pendidikan,Politik,'Hukum dan Kriminal','Sosial Budaya',Olahraga,'Teknologi dan Sains',Hiburan,'Bisnis dan Ekonomi',Kesehatan,'Bencana dan Kecelakaan'}");
+        pw.println();
+        pw.println("@data");
+        for(int i=0; i<listJudul.size(); i++) {
+			String temp = listFullText.get(i).replaceAll("[\\t\\n\\r]+"," ");
+            pw.print("'"+listJudul.get(i)+"','"+temp);
+            if(!listClass.get(i).equalsIgnoreCase("?")) pw.print("','");
+            else pw.print("',");
+            pw.print(listClass.get(i));
+            if(!listClass.get(i).equalsIgnoreCase("?")) pw.print("'");
+            pw.println();
+        }
+        pw.flush();
+        pw.close();
+        fw.close();
+        parser.close();
+    }
 	
 	public void save(String filename) throws Exception{
 		SerializationHelper.write(filename, classifier);
@@ -159,29 +208,84 @@ public class NewsClassifier {
 	public void load(String filename) throws Exception{
 		classifier = (Classifier) SerializationHelper.read(filename);
 	}
-        
-    public static void main(String[] args) {
-	try{
-		Instances dataSource = null;
-		NewsClassifier nc = new NewsClassifier();
-         //nc.readData();
-        dataSource = nc.LoadDB(dataSource);
-         dataSource = nc.StrToWV(dataSource, "s.txt");
+	
+	public void updateFromArff(String filename) throws Exception{
+		Instances dataUpdate = DataSource.read(filename);
+		 Filter stn = StrtoNom();
+		 stn.setInputFormat(dataUpdate);
+	//	 System.out.println(nc.dataUpdate.toString());
+		 dataUpdate = Filter.useFilter(dataUpdate, stn);
+		// System.out.println(nc.dataUpdate.toString());
+		 dataUpdate.setClassIndex(dataUpdate.numAttributes()-1);
+		for(Instance i:dataUpdate){
+			data.add(i);
+		}
+		fc.buildClassifier(data);
+		saveModel("model1.model");
+	}
+	
+	public void buildModel() throws Exception{
+		 data = LoadDB(data);
+		 Filter stw = StrToWV("s.txt");
          //System.out.println(nc.data.toString());
-         dataSource = nc.StrtoNom(dataSource);
+         Filter stn = StrtoNom();
+		 stn.setInputFormat(data);
+	//	 System.out.println(nc.data.toString());
+		 data = Filter.useFilter(data, stn);
+		// System.out.println(nc.data.toString());
+		 data.setClassIndex(data.numAttributes()-1);
+		 
+		 //Filter ca = ClassAssigner();
          //nc.ClassAssigner();
          //System.out.println(nc.data.toString());
          //RandomForest cls = new RandomForest();
 			//SMO cls = new SMO();
-         NaiveBayesMultinomial cls = new NaiveBayesMultinomial();
-         nc.CrossValidation(dataSource, cls, 10);
-		 
-		 nc.stringToARFF("", "REPUBLIKA.CO.ID, JAKARTA -- Microsoft mengumumkan bakal menjual konsol game terbarunya, Xbox One dengan harga resmi 499 dolar Amerika Serikat atau sekitar Rp 4,9 jutaan. " +
-"Seperti dilansir The Verge, Selasa (11/6), Xbox One akan resmi disebar ke 21 pasar di seluruh dunia pada November 2013." +
-"Dengan harga segitu, pengguna akan mendapatkan konsol Xbox One, gamepad wireless, Kinect terbaru, dan 14 hari masa uji coba Xbox Live Gold." +
-"Konsol Xbox One dibekali CPU 8 core dan GPU SoC serta HDD 500GB dengan RAM 8GB, SoC (system on a chip). Konsol ini juga bisa digunakan untuk memutar kepingan Blu-ray.", "crawling.ARFF");
-		 
-		 System.out.println(nc.classify(dataSource, "crawling.ARFF"));
+         classifier = new NaiveBayesMultinomial();
+		 fc.setClassifier(classifier);
+		// MultiFilter huba = new MultiFilter();
+	//	 huba.setFilters(new Filter[]{stw, stn,ca});
+		 fc.setFilter(stw);
+         fc.buildClassifier(data);
+		 saveModel("model1.model");
+	}
+	
+	public void saveModel(String filename) throws Exception{
+		SerializationHelper.write(filename, fc);
+	}
+	
+	public void loadModel(String filename) throws Exception{
+		data = LoadDB(data);
+		Filter stn = StrtoNom();
+		 stn.setInputFormat(data);
+	//	 System.out.println(nc.data.toString());
+		 data = Filter.useFilter(data, stn);
+		// System.out.println(nc.data.toString());
+		 data.setClassIndex(data.numAttributes()-1);
+		fc = (FilteredClassifier) SerializationHelper.read(filename);
+	}
+        
+    public static void main(String[] args) {
+	try{
+		NewsClassifier nc = new NewsClassifier("class");
+		/*nc.CrossValidation(10);
+		nc.stringToARFF("", "Jakarta - Dalam debat putaran keempat antara cawapres Jusuf Kalla (JK) dan Hatta Rajasa, JK menyatakan akan mengevaluasi sistem pelaksanaan UN. Pakar pendidikan Arief Rachman menilai tidak ada yang perlu diubah dari UN ataupun kurikulum pendidikan itu sendiri karena sudah memenuhi syarat." +
+"" +
+"\"Menurut saya nggak ada penataran guru-guru Kurikulum 2013 yang mengarah ke (aspek) kognitif, afektif dan psikomotor sudah ideal. Jangan diganti-ganti lagi. UN juga sudah benar karena UN sudah memperhitungkan kekuatan sekolah masing-masing (di tiap daerah),\" ujar Arief saat dihubungi, Senin (30/6/2014)." +
+"" +
+"Guru Besar di Universitas Negeri Jakarta ini menjelaskan ada alasan di balik perbedaan pandangan dengan mantan wakil presiden era Presiden SBY mengenai standar nilai UN. Arief mengaku tidak setuju dengan pendapat JK yang menginginkan syarat kelulusan UN menggunakan standar nilai mutlak." +
+"" +
+"\"Dulu saya rada musuhan dengan Pak JK (karena dia) membuat standar mutlak, padahal nggak boleh. Karena menguji anak itu harus dengan standar normal. Tidak benar pakai (syarat nilai) ujian mutlak. Itulah sebabnya Hatta menanyakan,\" lanjutnya." +
+"" +
+"Dalam debat, Minggu (29/6), JK menjelaskan, setiap tahun sistem UN mengalami pengubahan disesuaikan dengan keadaan di lapangan. Jenis soal yang awalnya hanya satu terpaksa diubah karena banyaknya siswa yang menyontek kemudian dibuat menjadi 20 jenis." +
+"" +
+"Menurutnya, UN tetap penting untuk melakukan pemetaan di bidang pendidikan. Apalagi Indonesia merupakan negara kepulauan yang rentan akan kesenjangan sosial jika tidak ada pemetaan." +
+"" +
+"\"Bagaimana kesenjangan di daerah-daerah akan kita hilangkan kalau tidak ada pemetaan, pemetaan tidak ada kalau tidak ada UN,\" tuturnya.", "Pendidikan", "update.arff");
+		nc.updateFromArff("update.arff");
+		nc.CrossValidation(10);*/
+		/* nc.CSVtoARFF("dummy.csv", "dummy.arff");
+		 System.out.println(nc.classify("dummy.arff"));*/
+				 
 	}
 	catch(Exception e){
             e.printStackTrace();
