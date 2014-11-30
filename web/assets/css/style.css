@@ -21,7 +21,7 @@ body{
 #head a{
 	color: black;
 }
-.right: {
+.right{
 	float: right !important;
 	z-index: 10;	
 }
