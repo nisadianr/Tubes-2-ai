@@ -1,65 +1,67 @@
 div{
-	display: block;
+    display: block;
 }
 body{
-	margin: 0px;
+    margin: 0px;
+    background-image: url("../images/wallpaper.jpg");
+    background-size: cover;
 }
 #head{
-	height: 60px;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	position: fixed;
-	width: 100%;
-	padding-right: 70px;
-	padding-left: 70px;
-	display: inline;
-	z-index: 10;
-	font-family: sans-serif;
-	font-size: 40px;
+    height: 60px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    position: fixed;
+    width: 100%;
+    padding-right: 70px;
+    padding-left: 70px;
+    display: inline;
+    z-index: 10;
+    font-family: sans-serif;
+    font-size: 40px;
 }
 #head a{
-	color: black;
+    color: black;
 }
 .right{
-	float: right !important;
-	z-index: 10;	
+    float: right !important;
+    z-index: 10;	
 }
 #status{
-	position: relative;
-	margin-top: 60px;
-	margin-bottom: 60px;
+    position: relative;
+    margin-top: 60px;
+    margin-bottom: 60px;
 }
 #berita{
-	margin-top:  	0px;
-	padding:40px;
-	width: auto;
-	height: auto;
-	font-size: 20px;
+    margin-top: 0px;
+    padding:40px;
+    width: auto;
+    height: auto;
+    font-size: 20px;
 }
 .center{
-	margin-right: auto;
-	margin-left: auto;
-	width: 70%;
+    margin-right: auto;
+    margin-left: auto;
+    width: 70%;
 }
 img.front{
-	width: 200px;
-	height: 200px;
+    width: 200px;
+    height: 200px;
 }
 #berita section{
-	display: inline-block;
-	width: auto;
-	margin-left: 100px;
-	font-size: 30px;	
+    display: inline-block;
+    width: auto;
+    margin-left: 100px;
+    font-size: 30px;	
 }
 #berita section:hover{
-	background-color: #6fcee9;
+    background-color: #6fcee9;
 }
 #feedback nav ul li{
-	font-size: 20px;
-	list-style: none;
+    font-size: 20px;
+    list-style: none;
 }
 a{
-	text-decoration: none; 
+    text-decoration: none; 
 }
 .change{
 display:block;
@@ -94,10 +96,9 @@ visibility:visible;
 display: inline;
  }
 #berita table{
-	text-align: center;
-	font-size: 20px;
+    text-align: center;
+    font-size: 20px;
 }
 a:hover{
-	text-decoration:underline;;
-
+    text-decoration:underline;;
 }
