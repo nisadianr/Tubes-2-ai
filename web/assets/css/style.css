@@ -50,7 +50,6 @@ img.front{
 #berita section{
     display: inline-block;
     width: auto;
-    margin-left: 100px;
     font-size: 30px;	
 }
 #berita section:hover{

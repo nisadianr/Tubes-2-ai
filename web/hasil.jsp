@@ -1,13 +1,15 @@
-<!-- 
-    Document   : hasil.html
-    Author     : Nisa Dian Rachmadi
-    Editor     : Try Ajitiono
--->
+<%-- 
+    Document   : hasil.jsp
+    Author     : Nisa Dian Rachmadi, Try Ajitiono
+--%>
 
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
 <html>
     <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <!-- Style -->
-        <link rel="stylesheet" href="assets/css/bootstrap.mincss">
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="assets/css/style.css">
         
         <!-- Title -->
@@ -23,16 +25,19 @@
             </a>
         </div>
         <div id="berita" align="center">
-            <div id="status" class="centered-pills"
+            <div id="status" class="centered-pills">
                 <ul class="nav nav-pills" >
                   <li role="presentation" class="disabled"><a href="#">Pilih cara input</a></li>
                   <li role="presentation" class="disabled"><a href="#">Masukan berita</a></li>
                   <li role="presentation" class="disabled active"><a href="#">Lihat hasilnya</a></li>
                 </ul>
             </div>
+            <section>
+                <!-- Isi ini dengan bagian akurasi nantinya -->
+            </section>
             <table>
                 <tr>
-                    <th>Judul artikel masuk katergori:</th>
+                    <th>Judul artikel masuk kategori:</th>
                 </tr>
                 <tr>
                     <td>cat1</td>
@@ -63,9 +68,9 @@
                                     <li><input type="checkbox" value="cat7" name="cat7">cat 7</li>
                                     <li><input type="checkbox" value="cat8" name="cat8">cat 8</li> 
                                     <li><input type="checkbox" value="cat9" name="cat9">cat 9</li>
-                                    <li><input type="checkbox" value="cat10" name="cat10">cat 10</li> <br>
-                                    <input class="btn btn-primary" type="submit" value="submit">
+                                    <li><input type="checkbox" value="cat10" name="cat10">cat 10</li> 
                                 </ul>
+                                <input class="btn btn-primary" type="submit" value="submit">
                             </nav>
                         </form>
                     </li>

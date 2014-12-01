@@ -22,19 +22,19 @@
                 <span class="detail">News Analyst</span>
             </a>
         </div>
-        <div id="berita" ><!--
-            <div id="status" class="centered-pills"
+        <div id="berita" >
+            <div id="status" class="centered-pills">
                 <ul class="nav nav-pills" >
                   <li role="presentation" class="disabled"><a href="#">Pilih cara input</a></li>
                   <li role="presentation" class="disabled active"><a href="#">Masukan berita</a></li>
                   <li role="presentation" class="disabled"><a href="#">Lihat hasilnya</a></li>
                 </ul>
-            </div>-->
-            <form class="center" method="get" action="manual-wekaproses.jsp">
+            </div>
+            <form class="center">
                 Judul:<br>
-                <input type="text" name="judulmanual" class="form-control right" size="88" placeholder="Judul"><br>
-                Konten:<br>
-                <textarea name="kontenmanual" class="form-control" placeholder="Kontent" rows="10" cols="90" ></textarea><br>
+                <input type="text" class="form-control right" size="88" placeholder="Judul"><br>
+                Kontent:<br>
+                <textarea class="form-control" placeholder="Kontent" rows="10" cols="90" ></textarea><br>
                 Pilih algoritma:
                 <select class="form-control">
                         <option>algo1</option>
@@ -42,7 +42,7 @@
                         <option>algo3</option>
                 </select>
                 <br>
-                <button type="submit" style="float: right" class="btn btn-primary" >Analyze</button>
+                <input type="submit" action="manual-wekaproses.jsp" value="Analyze" size="30" style="float: right" class="btn btn-primary"> 
             </form>
         </div>
         <footer>

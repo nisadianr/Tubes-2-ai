@@ -15,11 +15,10 @@
     <body>
         <%
            //melakukan proses weka dari teks
-            String hasil = NewsClassifier.NaiveBayesClassification(request.getParameter("judulmanual"), request.getParameter("kontenmanual"), "naiveBayesModel.ARFF");
-			out.println(hasil);
-		//nanti ditambahin lagi sama method dari newsclassifier buat ngeproses file hasil upload
+            
+           //nanti ditambahin lagi sama method dari newsclassifier buat ngeproses file hasil upload
            //forward ke halamna hasil
-           //response.sendRedirect("hasil.html");
+           response.sendRedirect("hasil.html");
         %>
     </body>
 </html>
