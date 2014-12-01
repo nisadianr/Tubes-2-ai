@@ -5,9 +5,9 @@
 package newsclassifier;
 
 import java.io.File;
-import org.apache.commons.fileupload.*;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.fileupload.*;
 
 /**
  *

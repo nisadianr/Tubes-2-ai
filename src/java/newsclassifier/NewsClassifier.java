@@ -40,27 +40,38 @@ import weka.filters.unsupervised.attribute.StringToNominal;
  */
 public class NewsClassifier {
 
-    private int mode; //1 untuk naive bayes, 2 untuk tree, 3 untuk KNN, 4 untuk ANN
+    private int mode; //1 untuk naive bayes, 2 untuk dummy, 3 untuk dummy
     public Instances data;
     private Instances unLabeledData;
     public Classifier classifier;
 	public FilteredClassifier fc;
 	private final String namaclass;
+        private String algo;
 	
-    public NewsClassifier (String s) throws Exception{
+        //n adalah modenya
+    public NewsClassifier (String s,int n) throws Exception{
         data = null;
-        mode = 1;
+        mode = n;
         classifier=null;
-		fc = new FilteredClassifier();
-		namaclass = s;
-		File f = new File("model1.model");
-		if(!f.exists()){
-			buildModel();
-		}
-		else{
-			System.out.println("lagingeload");
-			loadModel("model1.model");
-		}
+	fc = new FilteredClassifier();
+	namaclass = s;
+        if(mode==1){
+            algo = "NaiveBayesMultiNominal";
+        }
+        else if(mode==2){
+            algo = "NaiveBayesMultiNominal";
+        }
+        else if(mode==3){
+            algo = "NaiveBayesMultiNominal";
+        }
+	File f = new File(algo+".model");
+	if(!f.exists()){
+		buildModel();
+	}
+	else{
+		System.out.println("lagingeload");
+		loadModel(algo+".model");
+	}
     }
     
     public Instances LoadDB(Instances dataSource) throws Exception{
@@ -117,13 +128,13 @@ public class NewsClassifier {
         filter.setClassIndex("first");
 		return filter;
     }
-    public void CrossValidation(int n) throws Exception
+    public String CrossValidation(int n) throws Exception
     {
         Evaluation eval = new Evaluation(data);
         eval.crossValidateModel(fc, data, n, new Random(1));
-        System.out.println(eval.toSummaryString("Results",false));
-		System.out.println(eval.toMatrixString());
-		System.out.println(eval.toClassDetailsString());
+        return eval.toSummaryString("Results",false);
+	//System.out.println(eval.toMatrixString());
+	//System.out.println(eval.toClassDetailsString());
         //System.out.println(eval.toClassDetailsString());
         //System.out.println(eval.toMatrixString());
     }	
@@ -139,6 +150,7 @@ public class NewsClassifier {
 		pw.println("@attribute label {Pendidikan,Politik,'Hukum dan Kriminal','Sosial Budaya',Olahraga,'Teknologi dan Sains',Hiburan,'Bisnis dan Ekonomi',Kesehatan,'Bencana dan Kecelakaan'}");
 		pw.println();
 		pw.println("@data");
+                full_text = full_text.replaceAll("[\\t\\n\\r]+"," ");
 		pw.println("'" + text + "','" + full_text + "',"+label);
 
 		pw.flush();
@@ -187,7 +199,7 @@ public class NewsClassifier {
         pw.println();
         pw.println("@data");
         for(int i=0; i<listJudul.size(); i++) {
-			String temp = listFullText.get(i).replaceAll("[\\t\\n\\r]+"," ");
+        String temp = listFullText.get(i).replaceAll("[\\t\\n\\r]+"," ");
             pw.print("'"+listJudul.get(i)+"','"+temp);
             if(!listClass.get(i).equalsIgnoreCase("?")) pw.print("','");
             else pw.print("',");
@@ -221,7 +233,7 @@ public class NewsClassifier {
 			data.add(i);
 		}
 		fc.buildClassifier(data);
-		saveModel("model1.model");
+		saveModel(algo+".model");
 	}
 	
 	public void buildModel() throws Exception{
@@ -240,13 +252,22 @@ public class NewsClassifier {
          //System.out.println(nc.data.toString());
          //RandomForest cls = new RandomForest();
 			//SMO cls = new SMO();
-         classifier = new NaiveBayesMultinomial();
+                 if(mode==1){
+                    classifier = new NaiveBayesMultinomial();
+                 }
+                 else if(mode==2){
+                    classifier = new NaiveBayesMultinomial(); 
+                 }
+                 else if(mode==3){
+                    classifier = new NaiveBayesMultinomial(); 
+                 }
 		 fc.setClassifier(classifier);
 		// MultiFilter huba = new MultiFilter();
 	//	 huba.setFilters(new Filter[]{stw, stn,ca});
 		 fc.setFilter(stw);
          fc.buildClassifier(data);
-		 saveModel("model1.model");
+
+                     saveModel(algo+".model");
 	}
 	
 	public void saveModel(String filename) throws Exception{
@@ -263,10 +284,17 @@ public class NewsClassifier {
 		 data.setClassIndex(data.numAttributes()-1);
 		fc = (FilteredClassifier) SerializationHelper.read(filename);
 	}
+      
+	public static String NaiveBayesClassification(String judul, String full_text, String ARFF) throws Exception {
+		NewsClassifier nc = new NewsClassifier("class",1);
+		nc.stringToARFF(judul, full_text, "?", ARFF);
+		List<String> hasil = nc.classify(ARFF);		
+		return hasil.get(0);
+	}
         
     public static void main(String[] args) {
 	try{
-		NewsClassifier nc = new NewsClassifier("class");
+		NewsClassifier nc = new NewsClassifier("class",1);
 		/*nc.CrossValidation(10);
 		nc.stringToARFF("", "Jakarta - Dalam debat putaran keempat antara cawapres Jusuf Kalla (JK) dan Hatta Rajasa, JK menyatakan akan mengevaluasi sistem pelaksanaan UN. Pakar pendidikan Arief Rachman menilai tidak ada yang perlu diubah dari UN ataupun kurikulum pendidikan itu sendiri karena sudah memenuhi syarat." +
 "" +
